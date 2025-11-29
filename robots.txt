@@ -1,2 +1,19 @@
+Sitemap: https://rgjny.com/sitemap.xml
+
+# Disallow all images to appear in search results of Google Images
+User-agent: Googlebot-Image
+Disallow: / 
+
+# Disallow all (legal) crawlers from crawling of images
 User-agent: *
-Allow: /
+Disallow: /*.gif$
+Disallow: /*.jpg$
+Disallow: /*.jpeg$
+Disallow: /*.png$
+Disallow: /*.svg$
+
+# Disallow these files to be indexed
+User-agent: *
+Disallow: /year.html
+Disallow: /404.html
+Disallow: /license.html
