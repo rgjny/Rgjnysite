@@ -1,7 +1,7 @@
 ---
 avatarImage:
-  src: './connected.jpg'
-  alt: 'Everyone is connected'
+  src: './lain.jpg'
+  alt: 'quote'
 ---
 
-No matter where you are, everyone is always connected
+Present Day, Present Time! HAHAHAHA!
