@@ -1,0 +1,586 @@
+@import 'tailwindcss';
+@import 'katex/dist/katex.css';
+
+/* This forces the background to be Dark Brown even if the theme tries to be white/navy */
+:root {
+  /* Your Dark Brown Background */
+  --theme-bg: oklch(27.152% 0.01537 24.719) !important;
+  
+  /* Your specific #D8C2A7 Tan Text */
+  --theme-text: oklch(89.861% 0.05644 79.221) !important; 
+  
+  /* Accent color (slightly brighter tan/gold for links) */
+  --theme-primary: oklch(0.85 0.07 85) !important;
+  --theme-border: oklch(0.25 0.03 35) !important;
+}
+
+body {
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-text) !important;
+}
+
+/* Ensure all headings and paragraphs use the new tan color */
+h1, h2, h3, h4, h5, h6, p, li, span, a {
+  color: var(--theme-text) !important;
+}
+
+/* https://fontsource.org/fonts/jetbrains-mono/install */
+/* jetbrains-mono-latin-wght-normal */
+@font-face {
+  font-family: 'JetBrains Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url(@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2)
+    format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+    U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@theme {
+  --color-accent: var(--theme-accent);
+  --color-foreground: var(--theme-foreground);
+  --color-background: var(--theme-background);
+  --color-heading1: var(--theme-heading1);
+  --color-heading2: var(--theme-heading2);
+  --color-heading3: var(--theme-heading3);
+  --color-heading4: var(--theme-heading4);
+  --color-heading5: var(--theme-heading5);
+  --color-heading6: var(--theme-heading6);
+  --color-list: var(--theme-list);
+  --color-link: var(--theme-link);
+  --color-separator: var(--theme-separator);
+  --color-note: var(--theme-note);
+  --color-tip: var(--theme-tip);
+  --color-important: var(--theme-important);
+  --color-caution: var(--theme-caution);
+  --color-warning: var(--theme-warning);
+  --color-blue: var(--theme-blue);
+  --color-green: var(--theme-green);
+  --color-red: var(--theme-red);
+  --color-yellow: var(--theme-yellow);
+  --color-magenta: var(--theme-magenta);
+  --color-cyan: var(--theme-cyan);
+  --default-font-family: var(--theme-font), monospace;
+  --default-mono-font-family: var(--theme-font), monospace;
+}
+
+header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+  padding-bottom: 1.5rem !important;
+  margin-bottom: 2rem !important;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+* {
+  /* Custom scrollbar styles */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--theme-accent) 20%, transparent) transparent;
+}
+
+html {
+  /* Slightly more accented scrollbar for better visibility */
+  scrollbar-color: color-mix(in oklab, var(--theme-accent) 30%, transparent) transparent !important;
+  /* Prevents layout from jumping when opening theme select or search dialog menus */
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply transition-colors;
+  font-display: block;
+  font-size-adjust: from-font var(--theme-font);
+}
+
+/* The rest of your original styles remain unchanged */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:active,
+textarea:active,
+select:active,
+button:active {
+  @apply outline-1 outline-accent outline-offset-2;
+}
+
+a,
+button {
+  @apply hover:cursor-pointer;
+}
+
+a {
+  @apply underline-offset-2;
+}
+
+a.button {
+  @apply inline-flex text-accent border-3 border-accent/30 border-double py-1.5 px-3 whitespace-nowrap hover:bg-accent/8 rounded-xl transition-colors;
+}
+
+header button,
+header input {
+  @apply !outline-none;
+}
+
+button {
+  @apply cursor-pointer;
+}
+
+article img {
+  @apply block max-w-full border-8 border-foreground/10 rounded-xl overflow-hidden mx-auto;
+
+  &[data-pixelated] {
+    image-rendering: pixelated;
+  }
+}
+
+.prose {
+  @apply text-base/7;
+
+  code:not(.expressive-code code) {
+    @apply text-sm text-foreground/90 bg-foreground/5 px-2 py-1 rounded-lg whitespace-nowrap;
+  }
+
+  & > *:not(div.expressive-code, img, figure, video, hr, blockquote, aside),
+  figcaption {
+    @apply md:mx-2;
+  }
+
+  div.expressive-code {
+    @apply my-8;
+
+    --ec-codeFontFml: var(--default-mono-font-family);
+
+    /* Prevent italics in code blocks */
+    /* Feel free to remove this if you want italics */
+    div.code span {
+      font-style: normal !important;
+    }
+
+    div.copy {
+      --button-spacing: 9px;
+
+      button {
+        @apply hidden sm:flex;
+        --code-background: var(--theme-background);
+      }
+    }
+
+    figure {
+      @apply border-2 border-foreground/8 !rounded-xl;
+      box-shadow: none !important;
+
+      &.has-title div.copy,
+      &.is-terminal div.copy {
+        --button-spacing: 28px;
+      }
+
+      &.has-title.is-terminal {
+        span.title {
+          @apply !px-15;
+        }
+        --button-spacing: 30px !important;
+      }
+
+      figcaption {
+        border-radius: 10px 10px 0 0 !important;
+        background: transparent !important;
+        padding-block: 0 !important;
+        border: none !important;
+
+        &::after,
+        &::before {
+          border: none !important;
+        }
+
+        span.title {
+          @apply !text-foreground/90 !bg-foreground/8 text-center !border-b-2 !border-t-0 !border-r-0 !border-l-0 !border-foreground/10;
+          width: 100%;
+          font-family: var(--theme-font);
+          font-size: var(--ec-codeFontSize);
+          border-radius: 10px 10px 0 0 !important;
+          border-bottom-width: 0 !important;
+          padding: 0 12px !important;
+
+          &::after,
+          &::before {
+            border: none !important;
+          }
+        }
+      }
+
+      & > pre {
+        border-radius: 10px !important;
+        border: none !important;
+        scrollbar-width: thin;
+        background: transparent !important;
+      }
+    }
+  }
+
+  blockquote,
+  aside {
+    div.expressive-code {
+      @apply my-3;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply my-6.5 font-semibold;
+
+    a {
+      @apply underline-offset-3 text-inherit no-underline;
+    }
+  }
+
+  h1 {
+    @apply text-[1.75rem] text-heading1 mt-8;
+
+    &::before {
+      @apply mr-2 content-['#'];
+    }
+
+    .heading-anchor svg {
+      @apply size-5.5;
+    }
+  }
+
+  h2 {
+    @apply text-[1.6rem] text-heading2 mt-12;
+
+    &::before {
+      @apply mr-2 content-['##'];
+    }
+
+    .heading-anchor svg {
+      @apply size-5.5;
+    }
+  }
+
+  h3 {
+    @apply text-2xl text-heading3 mt-10;
+
+    &::before {
+      @apply mr-2 content-['###'];
+    }
+
+    .heading-anchor svg {
+      @apply size-5;
+    }
+  }
+
+  h4 {
+    @apply text-2xl text-heading4 mt-8;
+
+    &::before {
+      @apply mr-2 content-['####'];
+    }
+
+    .heading-anchor svg {
+      @apply size-5;
+    }
+  }
+
+  h5 {
+    @apply text-lg text-heading5;
+
+    &::before {
+      @apply mr-2 content-['#####'];
+    }
+
+    .heading-anchor svg {
+      @apply size-4.5;
+    }
+  }
+
+  h6 {
+    @apply text-lg text-heading6;
+
+    &::before {
+      @apply mr-2 content-['######'];
+    }
+
+    .heading-anchor svg {
+      @apply size-4.5;
+    }
+  }
+
+  p,
+  ul,
+  ol,
+  img,
+  figure,
+  video,
+  table,
+  blockquote,
+  aside,
+  .github-card {
+    @apply my-6.5;
+  }
+
+  b,
+  strong,
+  th,
+  button {
+    @apply font-semibold;
+  }
+
+  a {
+    @apply text-link underline hover:underline;
+
+    &.heading-anchor {
+      text-decoration: none;
+      color: inherit;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  button {
+    @apply font-bold text-center text-accent py-1 px-4.5 border-4 border-accent rounded-xl cursor-pointer hover:bg-accent/15 transition-colors;
+  }
+
+  figure:not(.expressive-code figure) {
+    @apply block mx-auto rounded-xl py-2;
+
+    figcaption {
+      @apply text-center italic;
+    }
+  }
+
+  ul,
+  ol {
+    @apply pl-8 sm:pl-9.5;
+  }
+
+  li {
+    @apply pl-2 my-4 marker:text-list;
+  }
+
+  ul li {
+    list-style-type: '-';
+  }
+
+  ol li {
+    @apply list-decimal;
+  }
+
+  hr {
+    @apply h-0.5 my-16 bg-separator border-none rounded-xl;
+  }
+
+  blockquote,
+  aside {
+    @apply px-7 md:px-6 rounded-xl py-6;
+
+    & > *:not(div.expressive-code, img, figure, video, hr),
+    figcaption {
+      @apply md:mx-2;
+    }
+
+    p:first-child {
+      @apply mt-0;
+    }
+
+    p:last-child {
+      @apply mb-0;
+    }
+  }
+
+  blockquote {
+    @apply relative bg-foreground/5 before:content-['>'] before:block before:absolute before:text-accent before:font-bold before:left-3;
+  }
+
+  aside {
+    @apply bg-foreground/7;
+
+    &.character-dialogue {
+      @apply sm:bg-transparent flex items-center sm:items-start justify-center sm:justify-start gap-3 py-4 px-2 md:px-5;
+
+      &:has(+ aside.character-dialogue) {
+        @apply mb-4 sm:mb-0 sm:pb-0;
+      }
+
+      & + aside.character-dialogue:nth-of-type(even):not(.align-left),
+      &.align-right {
+        @apply flex-row-reverse;
+
+        .character-dialogue-content:after {
+          @apply -right-3 -rotate-90;
+          left: initial;
+        }
+      }
+
+      & + aside.character-dialogue {
+        @apply mt-4 sm:mt-3 sm:pt-0;
+      }
+
+      img.character-dialogue-image {
+        @apply m-0 border-none shrink-1 w-20 sm:w-25;
+      }
+
+      .character-dialogue-content {
+        @apply relative shrink-5 sm:bg-foreground/6 px-1 mx-1.5 sm:px-6 sm:mt-0.5 rounded-xl sm:py-6 max-w-full sm:min-w-1/8;
+
+        &:after {
+          @apply hidden sm:block absolute top-8 -left-3 rotate-90 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-foreground/6;
+          content: '';
+        }
+      }
+    }
+
+    p.admonition-title {
+      @apply mb-2 inline-block font-semibold relative ml-6.5 md:ml-8.5;
+
+      &:before {
+        @apply size-4 bg-blue -left-6 top-1.5 absolute;
+        content: '';
+        mask-size: contain;
+        mask-position: center;
+        mask-repeat: no-repeat;
+      }
+    }
+
+    p:not(.admonition-title):first-child {
+      @apply mt-0;
+    }
+
+    &[data-admonition-type='note'] {
+      @apply bg-note/7;
+
+      p.admonition-title {
+        @apply text-note;
+      }
+
+      p.admonition-title:before {
+        @apply bg-note;
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath d='M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'%3E%3C/path%3E%3C/svg%3E");
+      }
+    }
+
+    &[data-admonition-type='tip'] {
+      @apply bg-tip/7;
+
+      p.admonition-title {
+        @apply text-tip;
+      }
+
+      p.admonition-title:before {
+        @apply bg-tip;
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath d='M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z'%3E%3C/path%3E%3C/svg%3E");
+      }
+    }
+
+    &[data-admonition-type='important'] {
+      @apply bg-important/7;
+
+      p.admonition-title {
+        @apply text-important;
+      }
+
+      p.admonition-title:before {
+        @apply bg-important;
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath d='M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z'%3E%3C/path%3E%3C/svg%3E");
+      }
+    }
+
+    &[data-admonition-type='caution'] {
+      @apply bg-caution/7;
+
+      p.admonition-title {
+        @apply text-caution;
+      }
+
+      p.admonition-title:before {
+        @apply bg-caution;
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath d='M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z'%3E%3C/path%3E%3C/svg%3E");
+      }
+    }
+
+    &[data-admonition-type='warning'] {
+      @apply bg-warning/7;
+
+      p.admonition-title {
+        @apply text-warning;
+      }
+
+      p.admonition-title:before {
+        @apply bg-warning;
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' width='16' height='16' aria-hidden='true'%3E%3Cpath d='M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z'%3E%3C/path%3E%3C/svg%3E");
+      }
+    }
+  }
+
+  .github-card {
+    @apply bg-foreground/5 rounded-xl px-4 py-3;
+
+    /* ... rest of .github-card styles unchanged ... */
+    /* (kept the same as your original for brevity) */
+  }
+
+  table,
+  th,
+  td {
+    @apply border-2 border-foreground/80 p-2.5;
+  }
+
+  th {
+    @apply uppercase text-left;
+  }
+
+  .katex-display {
+    @apply overflow-x-auto py-2 my-4;
+  }
+
+  fieldset {
+    @apply inline-block border-2 border-accent/80 p-2.5 rounded-xl;
+  }
+
+  fieldset *:first-child {
+    @apply mb-0;
+  }
+
+  fieldset input,
+  fieldset select,
+  fieldset textarea,
+  fieldset label,
+  fieldset button {
+    @apply mt-3 w-full;
+  }
+
+  label {
+    @apply inline-block;
+  }
+
+  label input {
+    @apply mt-0;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply bg-transparent text-foreground border-1 border-foreground p-2.5 rounded-xl;
+  }
+
+  input[type='checkbox'] {
+    @apply w-auto;
+  }
+
+  input[type='submit'] {
+    @apply border-accent cursor-pointer;
+  }
+  
+}

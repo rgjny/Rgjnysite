@@ -1,0 +1,103 @@
+---
+import siteConfig from '~/site.config'
+import LightDarkAutoButton from '~/components/LightDarkAutoButton.astro'
+import Search from '~/components/Search.astro'
+import SelectTheme from '~/components/SelectTheme.astro'
+import NavLink from '~/components/NavLink.astro'
+
+const lightDarkAutoTheme = siteConfig.themes.mode === 'light-dark-auto'
+const selectTheme =
+  siteConfig.themes.mode === 'select' && siteConfig.themes.include.length > 1
+---
+
+<header class="mb-8">
+  <div class="relative flex items-center justify-between bg-transparent border-b border-[oklch(0.25_0.03_35)] pb-4 rounded-none">
+    <a
+      id="logo"
+      href="/"
+      class="block px-4 py-1.5 max-w-full no-underline items-center font-bold rounded-lg transition-transform hover:scale-105"
+      style="background-color: #302b27ff; color: oklch(0.17 0.02 30);"
+    >
+      {siteConfig.title}
+    </a>
+    
+    <div class="flex items-center gap-3 sm:mr-3">
+      <Search trailingSlashes={siteConfig.trailingSlashes} />
+      
+      {lightDarkAutoTheme && <LightDarkAutoButton />}
+      {selectTheme && <SelectTheme />}
+      
+      <nav id="nav-mobile" aria-label="Menu" class="p-0 sm:hidden" style="color: #D8C2A7;">
+        <button
+          id="nav-mobile-button"
+          class="px-3 py-1 h-full cursor-pointer border rounded-lg transition-colors hover:bg-[oklch(0.22_0.02_30)]"
+          style="background-color: oklch(0.20 0.02 30); border-color: oklch(0.25 0.03 35); color: #D8C2A7;"
+          type="button"
+          aria-expanded="false"
+          aria-controls="nav-menu-list"
+        >
+          ▾
+        </button>
+        <ul
+          id="nav-mobile-list"
+          class="invisible absolute flex flex-col shadow-2xl border m-0 p-2.5 top-12 right-0 z-50 rounded-xl"
+          style="background-color: oklch(0.20 0.02 30); border-color: oklch(0.25 0.03 35); color: #D8C2A7;"
+        >
+          {
+            siteConfig.navLinks.map((link) => (
+              <li class="p-2" aria-expanded="false">
+                <NavLink link={link} />
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <nav aria-label="Menu" class="p-0 mt-4 ml-0.5 hidden sm:block">
+    <ul class="flex flex-row">
+      {
+        siteConfig.navLinks.map((link) => (
+          <li class="mr-6 opacity-80 hover:opacity-100 transition-opacity" aria-expanded="true">
+            <NavLink link={link} />
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style is:global>
+  /* Ensure navigation links use the Tan color */
+  header nav a {
+    color: #D8C2A7 !important;
+    text-decoration: none !important;
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  const navMobileButton = document.getElementById('nav-mobile-button')
+  const navMobileList = document.getElementById('nav-mobile-list')
+  const navMobileListItems = navMobileList?.querySelectorAll('li')
+  const toggleNavMobileMenu = (action: 'on' | 'off' | 'toggle') => {
+    let isNowOpen: boolean = false
+    if (action === 'on') {
+      isNowOpen = true
+      navMobileList?.classList.remove('invisible')
+    } else if (action === 'off') {
+      isNowOpen = false
+      navMobileList?.classList.add('invisible')
+    } else {
+      isNowOpen = !navMobileList?.classList.toggle('invisible')
+    }
+    navMobileButton?.setAttribute('aria-expanded', isNowOpen ? 'true' : 'false')
+    navMobileListItems?.forEach((listItem) => {
+      listItem.setAttribute('aria-expanded', isNowOpen ? 'true' : 'false')
+    })
+  }
+  navMobileButton?.addEventListener('click', (_ev) => {
+    toggleNavMobileMenu('toggle')
+  })
+</script>

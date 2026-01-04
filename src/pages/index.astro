@@ -1,0 +1,104 @@
+---
+import Layout from '~/layouts/Layout.astro'
+import { getSortedPosts } from '~/utils'
+import { getCollection, render } from 'astro:content'
+import PostPreview from '~/components/PostPreview.astro'
+import Pagination from '~/components/Pagination.astro'
+import BlockHeader from '~/components/BlockHeader.astro'
+import HomeBanner from '~/components/HomeBanner.astro'
+import siteConfig from '~/site.config'
+import TagsSection from '~/components/TagsSection.astro'
+import SeriesSection from '~/components/SeriesSection.astro'
+
+const home = await getCollection('home')
+let HomeContent
+let homeAvatarImage
+let homeGithubCalendar
+if (home.length > 0) {
+  const homeEntry = home[0]
+  const { Content } = await render(homeEntry)
+  HomeContent = Content
+  homeAvatarImage = homeEntry.data.avatarImage
+  homeGithubCalendar = homeEntry.data.githubCalendar
+}
+
+const sortedPosts = await getSortedPosts()
+const postsHaveTags = sortedPosts.some(
+  (post) => post.data.tags && post.data.tags.length > 0,
+)
+const postsHaveSeries = sortedPosts.some((post) => post.data.series)
+---
+
+<Layout>
+  {
+    HomeContent && (
+      <HomeBanner avatarImage={homeAvatarImage} githubCalendar={homeGithubCalendar}>
+        <HomeContent />
+      </HomeBanner>
+    )
+  }
+  {
+    postsHaveSeries && (
+      <section>
+        <BlockHeader>Series</BlockHeader>
+        <SeriesSection posts={sortedPosts} />
+      </section>
+    )
+  }
+  {
+    postsHaveTags && (
+      <section>
+        <BlockHeader>Tags</BlockHeader>
+        <TagsSection posts={sortedPosts} />
+      </section>
+    )
+  }
+  {
+    sortedPosts.length > 0 && (
+      <section>
+        <BlockHeader>Latest Posts</BlockHeader>
+        {sortedPosts
+          .reverse()
+          .slice(0, Math.floor(siteConfig.pageSize / 2))
+          .map((post) => (
+            <PostPreview post={post} />
+          ))}
+        <Pagination nextLink="/posts" nextText="All Posts" />
+      </section>
+    )
+  }
+</Layout>
+
+<style is:global>
+  /* Hide heading anchors on home page only */
+  a.heading-anchor {
+    display: none !important;
+  }
+
+  /* === LIGHT BROWN THEME FOR HOME PAGE ONLY === */
+  body {
+    --theme-background: oklch(0.92 0.04 50);     /* Soft light warm beige/brown */
+    --theme-foreground: oklch(0.25 0.06 30);     /* Deep rich brown text for contrast */
+    --theme-accent: oklch(0.65 0.12 45);         /* Warm caramel accent */
+    --theme-muted: oklch(0.85 0.04 50);          /* Lighter muted areas */
+    --theme-muted-foreground: oklch(0.45 0.08 40);
+    --theme-border: oklch(0.75 0.05 50);         /* Subtle warm border */
+    --theme-link: oklch(0.55 0.15 40);           /* Deep warm brown links */
+    --theme-separator: oklch(0.75 0.05 50);
+  }
+
+  /* Adjust code blocks and images to fit light background */
+  .prose div.expressive-code figure {
+    border-color: oklch(0.70 0.06 50) !important;
+    background: oklch(0.98 0.02 50) !important; /* Very light cream inside code */
+  }
+
+  article img {
+    border-color: oklch(0.70 0.06 50) !important;
+  }
+
+  /* Optional: Softer scrollbar to match */
+  * {
+    scrollbar-color: oklch(0.70 0.06 50) transparent;
+  }
+</style>
