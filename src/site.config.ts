@@ -72,7 +72,7 @@ overrides: {
   socialLinks: {
     github: 'https://github.com/rgjny',
     email: 'rgjny+contact@wearehackerone.com',
-    twitter: 'https://x.com/rgjny',
+    twitter: 'https://x.com/rgjny_',
     rss: false, // Set to true to include an RSS feed link in the footer
   },
   // Configuration for Giscus comments.
