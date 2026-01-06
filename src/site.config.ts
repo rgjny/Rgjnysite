@@ -71,7 +71,7 @@ overrides: {
   // Social links to display in the footer.
   socialLinks: {
     github: 'https://github.com/rgjny',
-    email: 'rgjny+contact@wearehackerone.com',
+    email: 'rgjnymail@proton.me',
     twitter: 'https://x.com/rgjny_',
     rss: false, // Set to true to include an RSS feed link in the footer
   },
